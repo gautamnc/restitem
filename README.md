@@ -5,8 +5,11 @@ This is a simple rest impl for sample item services.
 
 Services
 ========
+
 GetAuth : This is a convenience service which retrieves a digest for later REST authentications
+
 CreateItem : This service creates (an) item(s) in the datasource. Only PUT/POST are supported
+
 GetItemDetails : This service retrieves items from DB based on the location of request. 
 
 End Points And Details
