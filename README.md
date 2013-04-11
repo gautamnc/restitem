@@ -50,10 +50,6 @@ Testing
 
 Implement Test scripts for following scenarios
 
-Try serices with incorrect REST URI
-
-Try serices with incorrect auth appIdKey
-
 Test http get limitations on uri too long to handle to yield HTTP 414
 
 Test http get limitations on header size limit of default 8K
@@ -61,6 +57,12 @@ Test http get limitations on header size limit of default 8K
 Test HTTP POST/PUT limitations of maxPostSize on server (default 2M)
 
 Test CreateItem service with excess size of item JSON array
+
+Try serices with incorrect REST 
+
+Try endpoints with special chars in url
+
+Try serices with incorrect auth appIdKey
 
 Test all services for idempotent nature
 
@@ -70,11 +72,14 @@ Test for continuity of services
 
 Try endpoints with special chars in header
 
+Try endpoints with Empty/No header
+
 Try endpoints with special chars in body
 
 Try endpoints with Empty/No json in POST body
 
 Try endpoints with invalid json in POST body
+--
 
 Try CreateItem with no item id in request, where itemId is mandatory field
 
