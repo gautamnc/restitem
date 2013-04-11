@@ -46,7 +46,7 @@ public class ItemService implements StandardService{
 	public List<String> createNewItem(List<Item> items) {
 		
 		if (0 == items.size() || null == items) {
-			throw new StandardException("500", "Provided Item list is not complete/valid to process the request.");
+			throw new StandardException("400", "Bad Request, Provided Item list is not complete/valid to process the request.");
 		}
 		
 		ItemDAO itemDAO = itemDAOFactory.getItemDAO();

@@ -29,20 +29,6 @@ public class CreateItemTest {
 
 	@Test
 	public void testCreateItem() {
-		/*
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		request.setMethod("GET");
-		ModelAndView mv = controller.handleRequest(request,
-				new MockHttpServletResponse());
-		assertEquals(controller.getFormView(), mv.getViewName());
-
-		request = new MockHttpServletRequest();
-		request.setMethod("POST");
-		request.setParameter("firstName", "Richard");
-		request.setParameter("lastname", "Barabé");
-		mv = controller.handleRequest(request, new MockHttpServletResponse());
-		assertViewName(mv, controller.getSuccessView());
-		*/
 	}
 
 }

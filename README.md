@@ -89,3 +89,5 @@ Try to fetch item when there is no item in data source
 Try timestamp with alphanumeric values
 
 Try accessing non-exposed services/random URIs to yield HTTP 404
+
+Check and verify all JSON expected services are returning with Content-Type as application/json in header

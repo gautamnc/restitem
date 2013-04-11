@@ -55,11 +55,14 @@ public class ResourceUtility {
 	 */
 	private static String fallback(String key) {
 		String prop = null;
-		if (key.equals("dataSource")) {
+		if (key.equals("dataSource")) { //fall back for data source
 			prop = "db";
 		}
-		if (key.equals("privateKey")) {
+		if (key.equals("privateKey")) { //fall back for private key
 			prop = "supersecretprivatekey";
+		}
+		if (key.equals("locale")) {//fall back for locale
+			prop = "South Bay";
 		}
 
 		return prop;

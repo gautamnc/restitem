@@ -3,8 +3,9 @@
  */
 package com.restitem.common.controller;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,8 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.restitem.common.exception.StandardException;
 import com.restitem.common.model.Item;
-import com.restitem.common.service.AuthenticationService;
+import com.restitem.common.service.SecurityService;
 import com.restitem.common.service.ItemService;
+import com.restitem.common.util.ResourceUtility;
 
 /**
  * This class serves as the controller for all Item related activities in REST
@@ -36,7 +38,7 @@ import com.restitem.common.service.ItemService;
 public class ItemController {
 
 	@Autowired
-	private AuthenticationService authenticationService;
+	private SecurityService authenticationService;
 
 	private static final Logger LOG = Logger.getLogger(ItemController.class);
 
@@ -53,14 +55,14 @@ public class ItemController {
 	 * @return
 	 */
 	@RequestMapping(value = "{itemId}", method = RequestMethod.GET)
-	public @ResponseBody Item getItemDetails(@PathVariable String itemId, HttpServletRequest request) {
+	public @ResponseBody Item itemDetails(@PathVariable String itemId, HttpServletRequest request) {
 
-		validateRequest(request);
 		authenticate(request);
+		validateRequest(request);
 
 		final Item item = itemService.fetchItemDetails(itemId, getLocale(request));//this could be an enum or geo code from location service
 		if (null == item){
-			throw new StandardException("404", "Resource not found in data store.");
+			throw new StandardException("404", "Not Found, Item not present in data store.");
 		}
 				
 		return item;
@@ -73,33 +75,35 @@ public class ItemController {
 	 * 
 	 * @param response http response to be sent
 	 * @param A list of item instances of <code>Item</code> that needs to be created in data source
-	 * @return A list of item ids of the newly added items, returns -1 incase of failure at index location 
+	 * @return A list of item ids of the newly added items 
 	 */
 	@RequestMapping(value="createItems", method = RequestMethod.POST, headers = "content-type=application/json")
-	public @ResponseBody String createItems(HttpServletRequest request,  HttpServletResponse response, @RequestBody List<Item> items) {
-		
-		//TODO syntactic errors in json
+	public @ResponseBody Map<String, List<String>> createItems(HttpServletRequest request,  HttpServletResponse response, @RequestBody List<Item> items) {
 		
 		authenticate(request);
-		
-		if (null == items || 0 == items.size()) {
-			LOG.error("Empty JSON post data or Item without item Id received -> " + request.getRemoteAddr());
-			throw new StandardException("500", "POST data not complete/valid to process the request.");
-		}
+		validateRequest(request, items);
 		
 		List<String> itemIds = itemService.createNewItem(items);
 		
-		ListIterator<String> iterator = itemIds.listIterator();
-		while (iterator.hasNext()){
-			String itemId = iterator.next();
-			if (null == itemId || "".equals(itemId)){
-				iterator.set("-1");
-			}
-		}
+		Map< String, List<String>> mapResponse = new HashMap<String, List<String>>();
+		mapResponse.put("itemIds", itemIds);
 		
-		return new StringBuilder("{\"itemIds:\"").append(itemIds).append("\"}").toString();
+		return mapResponse;
 	}
 	
+	private void validateRequest(HttpServletRequest request, List<Item> items) {
+		if (null == items || 0 == items.size()) {
+			LOG.error("Empty JSON item post data received -> " + request.getRemoteAddr());
+			throw new StandardException("400", "Bad Request, JSON is not complete/valid to process the request.");
+		}
+		for (Item item : items){
+			if (null == item.getItemId() || "".equals(item.getItemId())){
+				LOG.error("Item post data without item Id received -> " + request.getRemoteAddr());
+				throw new StandardException("400", "Bad Request, ItemId is mandatory for creating items.");
+			}
+		}
+	}
+
 	/**
 	 * This handler creates an item in the data source by making calls to service layer after proper request authentication.
 	 * @param request http request received. POST method is supported here and find another delegator for PUT 
@@ -110,7 +114,7 @@ public class ItemController {
 	 * @return item id of the newly added item
 	 */
 	@RequestMapping(value="createItems", method = RequestMethod.PUT, headers = "content-type=application/json")
-	public @ResponseBody String createItemsForPut(HttpServletRequest request,  HttpServletResponse response, @RequestBody List<Item> items) {
+	public @ResponseBody Map<String, List<String>> createItemsForPut(HttpServletRequest request,  HttpServletResponse response, @RequestBody List<Item> items) {
 		return createItems(request, response, items);
 	}
 	
@@ -121,7 +125,7 @@ public class ItemController {
 	 */
 	@RequestMapping(value="createItems", method = RequestMethod.POST)
 	public @ResponseBody void createItemsFaultPost(HttpServletRequest request, @RequestBody Item item) {
-		throw new StandardException("415", "Inappropriate POST data received.");
+		throw new StandardException("415", "Unsupported Type, inappropriate/unsupported POST data received.");
 		
 	}
 	
@@ -134,15 +138,14 @@ public class ItemController {
 	public void createItemsNoOp(HttpServletRequest request) {
 		LOG.error("Call received on method not supported yet -> "
 				+ request.getRemoteAddr());
-		throw new StandardException("403", "Method Not Supported for this operation");
+		throw new StandardException("405", "Not Allowed, Method Not Supported for this operation");
 	}
 
 	@RequestMapping(value = "{itemId}")
 	public void getItemDetailsNoOp(@PathVariable String itemId,
 			HttpServletRequest request) {
-		LOG.error("Call received on method not supported yet -> "
-				+ request.getRemoteAddr());
-		throw new StandardException("403", "Method Not Supported for this operation");
+		LOG.error("Call received on method not supported yet -> "+ request.getRemoteAddr());
+		throw new StandardException("405", "Not Allowed, Method Not Supported for this operation");
 	}
 
 	/**
@@ -152,18 +155,18 @@ public class ItemController {
 	 */
 	private void authenticate(HttpServletRequest request) {
 
-		String landingUri = new StringBuilder(request.getScheme())
-				.append("://")
-				.append(request.getServerName())
-				.append(":")
-				.append(request.getServerPort())
-				.append(request.getContextPath())
-				.append(request.getRequestURI().substring(
-						request.getContextPath().length())).toString();
-
+		int serverPort = request.getServerPort();
+		
+		StringBuilder landingUri = new StringBuilder(request.getScheme())
+				.append("://").append(request.getServerName());
+		if (80 != serverPort){ //ignoring default web port 80
+			landingUri.append(":").append(request.getServerPort());
+		}
+		landingUri.append(request.getContextPath()) .append(request.getRequestURI().substring(request.getContextPath().length()));
+		
 		authenticationService.authenticate(request.getHeader("appIdKey"),
 				request.getHeader("appId"), request.getHeader("timestamp"),
-				landingUri, RequestMethod.GET.toString());
+				landingUri.toString(), request.getMethod());
 	}
 
 	/**
@@ -176,12 +179,12 @@ public class ItemController {
 		if (null == request.getHeader("appIdKey")
 				|| null == request.getHeader("appId")
 				|| null == request.getHeader("timestamp")
-				|| request.getHeader("appIdKey").length() == 0
-				|| request.getHeader("appId").length() == 0
-				|| request.getHeader("timestamp").length() == 0) {
+				|| request.getHeader("appIdKey").trim().length() == 0
+				|| request.getHeader("appId").trim().length() == 0
+				|| request.getHeader("timestamp").trim().length() == 0) {
 
 			throw new StandardException(
-					"415", "Inappropriate POST headers received.");
+					"400", "Bad Request, Inappropriate POST headers received.");
 		}
 	}
 	
@@ -190,9 +193,7 @@ public class ItemController {
 	 * @return locale fetched from request or location service
 	 */
 	private String getLocale(HttpServletRequest request) {
-		
 		//locationService.getLocale(request); could rely on location service to get locale
-		
-		return "South Bay"; //hard coding for now
+		return ResourceUtility.getProperty("locale");//stubbing location look up
 	}
 }
