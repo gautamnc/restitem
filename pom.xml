@@ -125,7 +125,6 @@
 					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	<packaging>war</packaging>

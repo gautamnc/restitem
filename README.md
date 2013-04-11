@@ -12,6 +12,9 @@ CreateItem : This service creates (an) item(s) in the datasource. Only PUT/POST 
 
 GetItemDetails : This service retrieves items from DB based on the location of request. 
 
+SystemStatus : This convenience service would tell you if the system is up, if success = 0
+
+
 Before you start
 ================
 
