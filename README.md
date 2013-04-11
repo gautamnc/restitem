@@ -79,7 +79,7 @@ Try endpoints with special chars in body
 Try endpoints with Empty/No json in POST body
 
 Try endpoints with invalid json in POST body
---
+~
 
 Try CreateItem with no item id in request, where itemId is mandatory field
 
