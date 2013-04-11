@@ -37,7 +37,7 @@ public class ResourceUtility {
 			LOG.error("No environment variables set for -> " + key);
 			throw new StandardException(
 					"500",
-					"Faulty environment variables. Please add -DdataSource=db (db OR cms) and  -DprivateKey=**** to the environment.");
+					"System property not found in JVM envs or anyother configuration services.");
 		}
 
 		return prop;
@@ -49,7 +49,8 @@ public class ResourceUtility {
 	 * config sytems and JVM env variables fail to retreive values for critical
 	 * configurations
 	 * 
-	 * @param key environment variable key
+	 * @param key
+	 *            environment variable key
 	 * @return property value
 	 */
 	private static String fallback(String key) {

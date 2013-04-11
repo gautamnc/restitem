@@ -12,6 +12,7 @@ import com.restitem.common.api.factory.DAOFactory;
 import com.restitem.common.dao.CMSItemDAO;
 import com.restitem.common.dao.DBItemDAO;
 import com.restitem.common.exception.StandardException;
+import com.restitem.common.util.ResourceUtility;
 
 /**
  * This class contains specialized contract details for operations related to
@@ -40,7 +41,7 @@ public class ItemDAOFactory implements DAOFactory {
 		}
 
 		//this config could be moved to spring context, configuration system or any property bundle
-		return "db".equals(System.getenv("dataSource")) ? dbItemDAO : cmsItemDAO;
+		return "db".equals(ResourceUtility.getProperty("dataSource")) ? dbItemDAO : cmsItemDAO;
 	}
 
 }
