@@ -37,7 +37,7 @@ public class ItemDAOFactory implements DAOFactory {
 
 		if (null == dbItemDAO && null == cmsItemDAO) {
 			LOG.error("Data Source config error -> No Data Source configured.");
-			throw new StandardException("500", "Internal System Error!");
+			throw new StandardException("500", "Internal System Error, context not loaded with DAOs!");
 		}
 
 		//this config could be moved to spring context, configuration system or any property bundle

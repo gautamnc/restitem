@@ -33,7 +33,7 @@ public class DBItemDAO implements ItemDAO {
 	public Item getItem(final String itemId, final String locale) {
 		if (null == itemId || "".equals(itemId)){
 			LOG.error("Item bean is null or itemId is not present in the bean");
-			throw new StandardException("415", "Item Bean is not valid, Please check if itemId is present");
+			throw new StandardException("415", "Unsupported Media Type, Item Bean is not valid, Please check if itemId is present");
 		}
 		
 		Item item = items.get(itemId);
@@ -57,7 +57,7 @@ public class DBItemDAO implements ItemDAO {
 		
 		if (null == item || null == itemId || "".equals(itemId)){
 			LOG.error("Item bean is null or itemId is not present in the bean");
-			throw new StandardException("415", "Item Bean is not valid, Please check if itemId is present");
+			throw new StandardException("415", "Unsupported Media Type, Item Bean is not valid, Please check if itemId is present");
 		}
 		
 		items.put(itemId, item); //adding item to an in-memory data container
@@ -67,13 +67,13 @@ public class DBItemDAO implements ItemDAO {
 	@Override
 	public Item updateItem(final Item item) {
 		LOG.error("Opertaion not yet supported -> updateItem(Item)");
-		throw new StandardException("404", "Not Found, Operation not yet supported!");
+		throw new StandardException("501", "Not Implemented, Operation not yet supported!");
 	}
 
 	@Override
 	public Boolean deleteItem(final String itemId) {
 		LOG.error("Opertaion not yet supported -> deleteItem(String)");
-		throw new StandardException("404", "Not Found, Operation not yet supported!");
+		throw new StandardException("501", "Not Implemented, Operation not yet supported!");
 	}
 	
 	/**

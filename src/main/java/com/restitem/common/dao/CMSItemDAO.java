@@ -28,25 +28,25 @@ public class CMSItemDAO implements ItemDAO {
 	@Override
 	public Item getItem(String itemId,final String locale) {
 		LOG.error("Opertaion not yet supported -> getItem(Item, String)");
-		throw new StandardException("404", "Not Found, Operation not yet supported!");
+		throw new StandardException("501", "Not Implemented, Operation not yet supported!");
 	}
 
 	@Override
 	public String createItem(Item item) {
 		LOG.error("Opertaion not yet supported -> createItem(Item)");
-		throw new StandardException("404", "Not Found, Operation not yet supported!");
+		throw new StandardException("501", "Not Implemented, Operation not yet supported!");
 	}
 	
 	@Override
 	public Item updateItem(Item item) {
 		LOG.error("Opertaion not yet supported -> updateItem(Item)");
-		throw new StandardException("404", "Not Found, Operation not yet supported!");
+		throw new StandardException("501", "Not Implemented, Operation not yet supported!");
 	}
 
 	@Override
 	public Boolean deleteItem(String itemId) {
 		LOG.error("Opertaion not yet supported -> deleteItem(String)");
-		throw new StandardException("404", "Not Found, Operation not yet supported!");
+		throw new StandardException("501", "Not Implemented, Operation not yet supported!");
 	}
 
 }

@@ -37,7 +37,7 @@ public class ResourceUtility {
 			LOG.error("No environment variables set for -> " + key);
 			throw new StandardException(
 					"500",
-					"System property not found in JVM envs or anyother configuration services.");
+					"Internal Server Error, System property not found in JVM envs or anyother configuration services.");
 		}
 
 		return prop;

@@ -8,6 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * Placeholder for method unit tests. Please find test cases for all rest
+ * services under <code>com.restitem.common.integrationtest</code> and
+ * <code>com.restitem.common.rest</code>
+ * 
  * @author gchandra
  * 
  */

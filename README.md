@@ -12,6 +12,31 @@ CreateItem : This service creates (an) item(s) in the datasource. Only PUT/POST 
 
 GetItemDetails : This service retrieves items from DB based on the location of request. 
 
+Before you start
+================
+
+The test cases are entirely focused on REST aspect of application. So to run your tests, please download a snapshot war from repo below and deploy it on Tomcat.
+
+Configurations on Tomcat :
+
+Please note that there is a fallback mechanism for all configs mentioned here. But to override them, please set these env vars on Tomcat.
+
+e.g -DdataSource=db
+
+
+dataSource {db(default),cms}
+
+restServer {localhost(default), restitem.gautamnc.cloudbees.net ...}
+
+overridePort {8080, 7070(default) ...}
+
+privateKey {any-private-key-you-like (look in ResourceUtility class)} // very much not supposed to be here!!
+
+locale {"South Bay" (default), "San Francisco"}
+
+I do personally think that all of these settings/configs are not supposed to be here, should be in secured NFS or configuration system.
+
+
 End Points And Details
 ======================
 
@@ -62,7 +87,7 @@ Try serices with incorrect REST
 
 Try endpoints with special chars in url
 
-Try serices with incorrect auth appIdKey
+Try services with incorrect auth appIdKey
 
 Test all services for idempotent nature
 
